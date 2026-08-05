@@ -1,0 +1,34 @@
+# Virtual Environment
+myvenv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Environment Variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Ignore datasets
+data/
+dataset/
+
+# Model checkpoints
+checkpoints/
+*.pth
+*.pt
+
+# Training outputs
+outputs/
+runs/
+logs/

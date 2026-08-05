@@ -1,0 +1,55 @@
+# ==========================
+# Core Deep Learning
+# ==========================
+torch
+torchvision
+torchaudio
+
+# ==========================
+# Computer Vision
+# ==========================
+opencv-python
+Pillow
+albumentations
+
+# ==========================
+# Data Processing
+# ==========================
+numpy
+pandas
+scipy
+scikit-learn
+
+# ==========================
+# Visualization
+# ==========================
+matplotlib
+seaborn
+plotly
+
+# ==========================
+# Progress & Utilities
+# ==========================
+tqdm
+rich
+
+# ==========================
+# Experiment Tracking
+# ==========================
+tensorboard
+
+# ==========================
+# Image Models
+# ==========================
+timm
+
+# ==========================
+# Configuration
+# ==========================
+PyYAML
+
+# ==========================
+# Notebook
+# ==========================
+jupyter
+ipykernel
