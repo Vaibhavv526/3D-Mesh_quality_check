@@ -10,6 +10,8 @@ Purpose:
     inference on new samples.
 """
 
+from src.evaluation.evaluator import Evaluator
+
 from src.datasets.dataloader import get_dataloaders
 
 import torch
@@ -64,6 +66,24 @@ def main():
     print("\nLoading Validation Dataset...")
 
     _, val_loader = get_dataloaders()
+
+    evaluator = Evaluator(
+        model=model,
+        device=DEVICE,
+    )
+
+    print("\n" + "=" * 60)
+    print("FULL VALIDATION EVALUATION")
+    print("=" * 60)
+
+    metrics = evaluator.evaluate(
+        val_loader,
+    )
+
+    print(f"\nF1 Score   : {metrics['f1']:.4f}")
+    print(f"Accuracy   : {metrics['accuracy']:.4f}")
+    print(f"Precision  : {metrics['precision']:.4f}")
+    print(f"Recall     : {metrics['recall']:.4f}")
 
     print(
         f"Validation Samples : {len(val_loader.dataset)}"
