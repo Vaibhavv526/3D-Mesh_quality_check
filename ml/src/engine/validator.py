@@ -1,4 +1,5 @@
 from tqdm import tqdm
+from src.metrics.metrics import Metrics
 
 import torch
 
@@ -26,6 +27,9 @@ class Validator:
 
         running_loss = 0.0
 
+        all_predictions = []
+        all_targets = []
+
         progress_bar = tqdm(
             dataloader,
             desc="Validation",
@@ -50,10 +54,34 @@ class Validator:
                     quality,
                 )
 
+                all_predictions.append(
+                    defect_logits.cpu()
+                )
+
+                all_targets.append(
+                    labels.cpu()
+                )
+
                 running_loss += loss.item()
 
                 progress_bar.set_postfix(
                     loss=f"{loss.item():.4f}"
                 )
 
-        return running_loss / len(dataloader)
+        all_predictions = torch.cat(
+            all_predictions,
+            dim=0,
+        )
+
+        all_targets = torch.cat(
+            all_targets,
+            dim=0,
+        )
+        metrics = Metrics.compute_metrics(
+            all_predictions,
+            all_targets,
+        )
+        return (
+            running_loss / len(dataloader),
+            metrics,
+        )

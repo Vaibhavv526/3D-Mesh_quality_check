@@ -9,6 +9,8 @@ Purpose:
     Main training pipeline for the
     3D Mesh Quality Control model.
 """
+
+from src.callbacks.early_stopping import EarlyStopping
 import random
 import numpy as np
 import torch
@@ -103,6 +105,10 @@ def main():
         device=DEVICE,
     )
 
+    early_stopping = EarlyStopping(
+        patience=5,
+    )
+
     print("\n✓ Model Initialized Successfully")
 
     print(f"Epochs        : {EPOCHS}")
@@ -128,14 +134,24 @@ def main():
         train_loss = trainer.train_one_epoch(
             train_loader,
         )
-        val_loss = validator.validate(
+        val_loss, metrics = validator.validate(
             val_loader,
         )
-        scheduler.step()
+
+        early_stopping.step(val_loss)
+        
         
         print(f"\nTrain Loss      : {train_loss:.4f}")
 
         print(f"Validation Loss : {val_loss:.4f}")
+
+        print(f"F1 Score        : {metrics['f1']:.4f}")
+
+        print(f"Accuracy        : {metrics['accuracy']:.4f}")
+
+        print(f"Precision       : {metrics['precision']:.4f}")
+
+        print(f"Recall          : {metrics['recall']:.4f}")
 
         print(
             f"Learning Rate   : "
@@ -147,10 +163,26 @@ def main():
             best_val_loss = val_loss
 
             torch.save(
-                model.state_dict(),
+                {
+                    "epoch": epoch + 1,
+                    "model_state_dict": model.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                    "scheduler_state_dict": scheduler.state_dict(),
+                    "best_val_loss": best_val_loss,
+                },
                 checkpoint_dir / "best_model.pth",
             )
 
             print("\n✓ Best model saved.")
+
+        if early_stopping.should_stop:
+
+            print(
+                f"\nEarly stopping triggered after "
+                f"{epoch + 1} epochs."
+            )
+
+            break
+        scheduler.step()
 if __name__ == "__main__":
     main()

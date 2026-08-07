@@ -3,6 +3,8 @@ import torch
 from sklearn.metrics import (
     f1_score,
     accuracy_score,
+    precision_score,
+    recall_score,
 )
 
 
@@ -34,7 +36,23 @@ class Metrics:
             predictions,
         )
 
+        precision = precision_score(
+            targets,
+            predictions,
+            average="macro",
+            zero_division=0,
+        )
+
+        recall = recall_score(
+            targets,
+            predictions,
+            average="macro",
+            zero_division=0,
+        )
+
         return {
             "f1": f1,
             "accuracy": accuracy,
+            "precision": precision,
+            "recall": recall,
         }
