@@ -1,0 +1,107 @@
+============================================================
+DEVICE INFORMATION
+============================================================
+Device : cuda
+GPU : NVIDIA GeForce RTX 3050 6GB Laptop GPU
+
+Loading Dataloaders...
+Training Batches   : 449
+Validation Batches : 113
+
+Building Model...
+ConvNeXtModel
+
+✓ Model Initialized Successfully
+Epochs        : 30
+Learning Rate : 0.0001
+Device        : cuda
+
+============================================================
+Epoch 1/30
+============================================================
+
+Train Loss      : 0.4176
+Validation Loss : 0.3543
+F1 Score        : 0.2635
+Accuracy        : 0.4434
+Precision       : 0.4562
+Recall          : 0.2073
+Learning Rate   : 0.00010000
+
+✓ Best model saved.
+
+============================================================
+Epoch 2/30
+============================================================
+
+Train Loss      : 0.3411
+Validation Loss : 0.3037
+F1 Score        : 0.3616
+Accuracy        : 0.5555
+Precision       : 0.5744
+Recall          : 0.3178
+Learning Rate   : 0.00009973
+
+✓ Best model saved.
+
+============================================================
+Epoch 3/30
+============================================================
+
+Train Loss      : 0.3095
+Validation Loss : 0.3151
+F1 Score        : 0.3742
+Accuracy        : 0.5538
+Precision       : 0.5212
+Recall          : 0.3345
+Learning Rate   : 0.00009891
+
+============================================================
+Epoch 4/30
+============================================================
+
+Train Loss      : 0.2770
+Validation Loss : 0.3151
+F1 Score        : 0.3893
+Accuracy        : 0.5499
+Precision       : 0.5615
+Recall          : 0.3403
+Learning Rate   : 0.00009755
+
+============================================================
+Epoch 5/30
+============================================================
+
+Train Loss      : 0.2407
+Validation Loss : 0.3274
+F1 Score        : 0.3753
+Accuracy        : 0.5761
+Precision       : 0.4758
+Recall          : 0.3369
+Learning Rate   : 0.00009568
+
+============================================================
+Epoch 6/30
+============================================================
+
+Train Loss      : 0.2079
+Validation Loss : 0.3455
+F1 Score        : 0.3868
+Accuracy        : 0.5706
+Precision       : 0.5259
+Recall          : 0.3479
+Learning Rate   : 0.00009330
+
+============================================================
+Epoch 7/30
+============================================================
+
+Train Loss      : 0.1752
+Validation Loss : 0.3947
+F1 Score        : 0.4162
+Accuracy        : 0.5505
+Precision       : 0.4813
+Recall          : 0.3885
+Learning Rate   : 0.00009045
+
+Early stopping triggered after 7 epochs.
