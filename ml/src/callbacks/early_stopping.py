@@ -7,7 +7,7 @@ class EarlyStopping:
 
         self.patience = patience
 
-        self.best_loss = float("inf")
+        self.best_f1 = 0.0
 
         self.counter = 0
 
@@ -15,12 +15,12 @@ class EarlyStopping:
 
     def step(
         self,
-        val_loss,
+        val_f1,
     ):
 
-        if val_loss < self.best_loss:
+        if val_f1 > self.best_f1:
 
-            self.best_loss = val_loss
+            self.best_f1 = val_f1
 
             self.counter = 0
 

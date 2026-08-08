@@ -3,14 +3,18 @@ import torch.nn as nn
 
 class MultiTaskLoss(nn.Module):
 
-    def __init__(self):
+    def __init__(
+        self,
+        pos_weight=None,
+    ):
 
         super().__init__()
 
-        self.defect_loss = nn.BCEWithLogitsLoss()
+        self.defect_loss = nn.BCEWithLogitsLoss(
+            pos_weight=pos_weight,
+        )
 
         self.quality_loss = nn.BCEWithLogitsLoss()
-
     def forward(
 
         self,

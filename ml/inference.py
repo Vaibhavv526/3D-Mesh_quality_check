@@ -16,7 +16,10 @@ from src.datasets.dataloader import get_dataloaders
 
 import torch
 
-from configs import DEVICE
+from configs import (
+    DEVICE,
+    BEST_THRESHOLDS,
+)
 
 from src.models.convnext import ConvNeXtModel
 
@@ -70,20 +73,63 @@ def main():
     evaluator = Evaluator(
         model=model,
         device=DEVICE,
+        thresholds=BEST_THRESHOLDS,
     )
 
     print("\n" + "=" * 60)
     print("FULL VALIDATION EVALUATION")
     print("=" * 60)
 
-    metrics = evaluator.evaluate(
+    metrics, class_report, all_predictions, all_targets = evaluator.evaluate(
         val_loader,
     )
+
+    torch.save(
+        all_predictions,
+        "validation_predictions.pt",
+    )
+
+    torch.save(
+        all_targets,
+        "validation_targets.pt",
+    )
+
+    print("\n✓ Validation predictions saved")
 
     print(f"\nF1 Score   : {metrics['f1']:.4f}")
     print(f"Accuracy   : {metrics['accuracy']:.4f}")
     print(f"Precision  : {metrics['precision']:.4f}")
     print(f"Recall     : {metrics['recall']:.4f}")
+
+    print("\n" + "=" * 60)
+    print("PER CLASS PERFORMANCE")
+    print("=" * 60)
+
+    for class_name, values in class_report.items():
+
+        if not isinstance(values, dict):
+            continue
+
+        if "precision" not in values:
+            continue
+
+        print(f"\n{class_name}")
+
+        print(
+            f"  Precision : {values['precision']:.4f}"
+        )
+
+        print(
+            f"  Recall    : {values['recall']:.4f}"
+        )
+
+        print(
+            f"  F1 Score  : {values['f1-score']:.4f}"
+        )
+
+        print(
+            f"  Support   : {values['support']}"
+        )
 
     print(
         f"Validation Samples : {len(val_loader.dataset)}"
@@ -153,8 +199,13 @@ def main():
         sample["quality"][0]
     )
 
+    thresholds = torch.tensor(
+        BEST_THRESHOLDS,
+        device=defect_probs.device,
+    )
+
     predicted_defects = (
-        defect_probs > 0.5
+        defect_probs > thresholds
     ).int()
 
     predicted_quality = (

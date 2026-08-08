@@ -11,11 +11,14 @@ class Evaluator:
         self,
         model,
         device,
+        thresholds=None,
     ):
 
         self.model = model.to(device)
 
         self.device = device
+
+        self.thresholds = thresholds
 
     def evaluate(
         self,
@@ -69,6 +72,18 @@ class Evaluator:
             metrics = Metrics.compute_metrics(
                 all_predictions,
                 all_targets,
+                threshold=self.thresholds,
             )
 
-            return metrics
+            class_report = Metrics.compute_class_report(
+                all_predictions,
+                all_targets,
+                threshold=self.thresholds,
+            )
+
+            return (
+                metrics,
+                class_report,
+                all_predictions,
+                all_targets,
+            )

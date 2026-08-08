@@ -5,6 +5,7 @@ from sklearn.metrics import (
     accuracy_score,
     precision_score,
     recall_score,
+    classification_report,
 )
 
 
@@ -14,11 +15,23 @@ class Metrics:
     def compute_metrics(
         predictions,
         targets,
+        threshold=0.5,
     ):
 
-        predictions = torch.sigmoid(predictions)
+        predictions = torch.sigmoid(
+            predictions,
+        )
 
-        predictions = (predictions > 0.5).float()
+        if isinstance(threshold, list):
+
+            threshold = torch.tensor(
+                threshold,
+                device=predictions.device,
+            )
+
+        predictions = (
+            predictions > threshold
+        ).float()
 
         predictions = predictions.cpu().numpy()
 
@@ -56,3 +69,37 @@ class Metrics:
             "precision": precision,
             "recall": recall,
         }
+
+    @staticmethod
+    def compute_class_report(
+        predictions,
+        targets,
+        threshold=0.5,
+    ):
+        predictions = torch.sigmoid(
+            predictions,
+        )
+
+        if isinstance(threshold, list):
+
+            threshold = torch.tensor(
+                threshold,
+                device=predictions.device,
+            )
+
+        predictions = (
+            predictions > threshold
+        ).float()
+
+        predictions = predictions.cpu().numpy()
+
+        targets = targets.cpu().numpy()
+
+        report = classification_report(
+            targets,
+            predictions,
+            output_dict=True,
+            zero_division=0,
+        )
+
+        return report

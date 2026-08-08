@@ -10,6 +10,7 @@ Purpose:
     3D Mesh Quality Control model.
 """
 
+from src.utils.class_weights import compute_pos_weight
 from src.callbacks.early_stopping import EarlyStopping
 import random
 import numpy as np
@@ -71,6 +72,14 @@ def main():
     print("\nLoading Dataloaders...")
 
     train_loader, val_loader = get_dataloaders()
+    train_dataframe = train_loader.dataset.dataframe
+
+    pos_weight = compute_pos_weight(
+        train_dataframe,
+    ).to(DEVICE)
+
+    print("\nPositive Class Weights")
+    print(pos_weight)
     print(f"Training Batches   : {len(train_loader)}")
     print(f"Validation Batches : {len(val_loader)}")
     print("\nBuilding Model...")
@@ -78,8 +87,9 @@ def main():
     model = ConvNeXtModel()
 
     print(model.__class__.__name__)
-
-    criterion = MultiTaskLoss()
+    criterion = MultiTaskLoss(
+        pos_weight=pos_weight,
+    )
 
     optimizer = AdamW(
         model.parameters(),
@@ -121,7 +131,7 @@ def main():
         exist_ok=True,
     )
 
-    best_val_loss = float("inf")
+    best_val_f1 = 0.0
 
     for epoch in range(EPOCHS):
 
@@ -138,7 +148,9 @@ def main():
             val_loader,
         )
 
-        early_stopping.step(val_loss)
+        early_stopping.step(
+            metrics["f1"],
+        )
         
         
         print(f"\nTrain Loss      : {train_loss:.4f}")
@@ -158,9 +170,9 @@ def main():
             f"{optimizer.param_groups[0]['lr']:.8f}"
         )
 
-        if val_loss < best_val_loss:
+        if metrics["f1"] > best_val_f1:
 
-            best_val_loss = val_loss
+            best_val_f1 = metrics["f1"]
 
             torch.save(
                 {
@@ -168,7 +180,7 @@ def main():
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                     "scheduler_state_dict": scheduler.state_dict(),
-                    "best_val_loss": best_val_loss,
+                    "best_val_f1": best_val_f1,
                 },
                 checkpoint_dir / "best_model.pth",
             )
